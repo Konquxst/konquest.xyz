@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konquest</title>
+    <link rel="icon" type="image/png" href="favicon.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --card-bg: rgba(80, 0, 0, 0.65); /* anciennement gris */
+            --card-border: rgba(255, 40, 40, 0.15); /* anciennement gris clair */
+            --text-primary: #ffffff;
+            --text-secondary: #ffb3b3; /* anciennement gris */
+            --blur-radius: 12px;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: url('assets/background.gif') center/cover no-repeat fixed;
+            filter: blur(20px);
+            z-index: -1;
+        }
+
+        .main-container {
+            max-width: 580px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .background-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .background-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%),
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .background-card::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.03) 50%, transparent 70%);
+            border-radius: 19px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .background-card:hover {
+            transform: translateY(-3px) rotateX(1.5deg) rotateY(1.5deg);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.45),
+                0 4px 16px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .background-card > * {
+            position: relative;
+            z-index: 3;
+        }
+
+        .card {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 4;
+        }
+
+        .card:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .profile-header {
+            position: relative;
+            height: 220px;
+            margin-bottom: 60px;
+        }
+
+        .banner-image {
+            height: 180px;
+            background-image: url("assets/banner.webp");
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: 700;
+            color: rgb(187, 46, 46);
+            border: 1px solid var(--card-border);
+            box-shadow: 
+                0 0 20px rgba(187, 46, 46, 0.4),
+                0 0 40px rgba(187, 46, 46, 0.2),
+                0 0 60px rgba(187, 46, 46, 0.1);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #a92d2d;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .main-info-card {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .main-info-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 8px;
+        }
+        
+        .main-info-card .subtitle-links {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .subtitle-links a {
+            background-color: rgba(120, 0, 0, 0.8); /* anciennement gris */
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .subtitle-links a:hover {
+            background-color: rgba(180, 0, 0, 0.9); /* anciennement gris */
+        }
+        
+        .rank-section {
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 16px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+        
+        .rank-section h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+        
+        .rank-section span {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .discord-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .activity-card, .discord-server-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 80px;
+        }
+
+        .activity-card img, .discord-server-card img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .activity-card .info, .discord-server-card .info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .activity-card .info p, .discord-server-card .info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .activity-card .info .username {
+            font-weight: 700;
+        }
+        
+        .activity-card .info .details, .discord-server-card .info .members {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .join-button {
+            background-color: #b02929;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            position: relative;
+            z-index: 5;
+            display: inline-block;
+        }
+
+        .join-button:hover {
+            color: #ffffff;
+            background-color: #a61515;
+        }
+
+        .page-footer {
+            margin-top: 20px;
+        }
+
+        .page-footer a {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 16px;
+            }
+
+            .main-container {
+                max-width: 100%;
+                gap: 12px;
+            }
+
+            .background-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .profile-header {
+                height: 180px;
+                margin-bottom: 50px;
+            }
+
+            .banner-image {
+                height: 140px;
+                font-size: 2.2em;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                border-width: 3px;
+            }
+
+            .main-info-card h1 {
+                font-size: 24px;
+            }
+
+            .subtitle-links {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .subtitle-links a {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .rank-section {
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+
+            .rank-section h2 {
+                font-size: 15px;
+            }
+
+            .rank-section span {
+                font-size: 14px;
+            }
+
+            .discord-server-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .discord-server-card img {
+                width: 60px;
+                height: 60px;
+                order: 1;
+            }
+
+            .discord-server-card .info {
+                order: 2;
+                width: 100%;
+            }
+
+            .discord-server-card .join-button {
+                order: 3;
+                width: 100%;
+                text-align: center;
+                margin-top: 8px;
+            }
+
+            .join-button {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .background-card {
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .profile-header {
+                height: 160px;
+                margin-bottom: 45px;
+            }
+
+            .banner-image {
+                height: 120px;
+                font-size: 1.8em;
+            }
+
+            .profile-avatar {
+                width: 90px;
+                height: 90px;
+                border-width: 2px;
+            }
+
+            .main-info-card h1 {
+                font-size: 22px;
+            }
+
+            .rank-section {
+                padding: 10px;
+            }
+
+            .rank-section h2 {
+                font-size: 14px;
+            }
+
+            .rank-section span {
+                font-size: 13px;
+            }
+
+            .discord-server-card {
+                gap: 8px;
+                min-height: auto;
+                padding: 12px;
+            }
+
+            .discord-server-card img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .discord-server-card .join-button {
+                margin-top: 4px;
+            }
+
+            .join-button {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+
+            .page-footer a {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .audio-control {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .main-info-card h1 {
+                font-size: 20px;
+            }
+
+            .subtitle-links a {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .rank-section span {
+                font-size: 12px;
+            }
+
+            .discord-server-card .username {
+                font-size: 14px;
+            }
+
+            .discord-server-card .members {
+                font-size: 12px;
+            }
+        }
+
+        /* Orientation landscape sur mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .profile-header {
+                height: 140px;
+                margin-bottom: 40px;
+            }
+
+            .banner-image {
+                height: 100px;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+            }
+
+            .discord-server-card {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .discord-server-card .info {
+                order: unset;
+            }
+
+            .discord-server-card .join-button {
+                order: unset;
+                width: auto;
+            }
+        }
+
+        /* Amélioration de l'accessibilité tactile */
+        @media (hover: none) and (pointer: coarse) {
+            .card:hover,
+            .background-card:hover {
+                transform: none;
+            }
+
+            .join-button:hover {
+                background-color: #a91818;
+                color: rgb(114, 8, 8);
+            }
+
+            .subtitle-links a:hover {
+                background-color: rgba(120, 0, 0, 0.8); /* anciennement gris */
+            }
+        }
+
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .audio-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+
+        .audio-btn:hover {
+            background-color: rgba(178, 44, 44, 0.8);
+            border-color: rgba(125, 22, 22, 0.2);
+            transform: scale(1.1);
+        }
+
+        .audio-btn.playing {
+            background-color: rgba(0, 255, 0, 0.2);
+            border-color: rgba(0, 255, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .audio-control {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .audio-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .audio-control {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        .start-music-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .start-music-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+        }
+
+        .start-music-card h3 {
+            margin: 0 0 16px;
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .start-music-card p {
+            margin: 0 0 24px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .start-music-btn {
+            background: linear-gradient(135deg, #921212, #750b0b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+        }
+
+        .start-music-btn:hover {
+            background: linear-gradient(135deg, #6a0404, #5d0707);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-music-btn i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="background-card">
+            <header class="profile-header">
+                <div class="banner-image"></div>
+                <img src="assets/avatar.jpg" alt="Avatar de Konquest" class="profile-avatar">
+            </header>
+
+            <main class="card main-info-card">
+                <h1>Konquest</h1>
+                <div class="subtitle-links">
+                    <a href="https://discord.gg/beonepourcent">/beonepourcent</a>
+                    <a href="https://discord.gg/VBN5YFjtxA">/cryptx</a>
+                </div>
+
+                <div class="rank-section">
+                    <h2>A propos de moi</h2>
+                    <span>🔍・Compétences :
+                        <br> Developpeur Full Stack (HTML, CSS, JS, PY)
+                        <br> GFX (PS, C4D)
+                        <br> Audio (FL Studio, APO, Voicemeeter)
+                    </span>
+                </div>
+
+                <div class="discord-section">
+                    <i class="fab fa-discord"></i>
+                    <span>Discord : @8z91</span>
+                </div>
+            </main>
+
+            <section class="card discord-server-card">
+                 <img src="assets/fnis.jpg" alt="Server Icon">
+                <div class="info">
+                    <p class="username">FNIS - Commu Cyber</p>
+                </div>
+                <a href="https://discord.gg/su7Ts3PeVP" class="join-button">Rejoindre</a>
+            </section>
+
+            <section class="card discord-server-card">
+                <img src="assets/tlg.jpg" alt="Server Icon">
+               <div class="info">
+                   <p class="username">Mon Telegram</p>
+               </div>
+               <a href="https://t.me/konquxst" class="join-button">Rejoindre</a>
+           </section>
+        </div>
+
+    </div>
+
+    <footer class="page-footer">
+        <a href="index.html">Made by Konquest</a>
+    </footer>
+
+    <!-- Lecteur audio en arrière-plan -->
+    <audio id="background-music" loop preload="auto" style="display: none;">
+        <source src="assets/background-music.mp3" type="audio/mpeg">
+        <source src="assets/background-music.wav" type="audio/wav">
+        <source src="assets/background-music.ogg" type="audio/ogg">
+        Votre navigateur ne supporte pas l'élément audio.
+    </audio>
+
+    <!-- Contrôle audio -->
+    <div class="audio-control" id="audio-control">
+        <button class="audio-btn" id="audio-btn">
+            <i class="fas fa-volume-mute" id="audio-icon"></i>
+        </button>
+    </div>
+
+    <!-- Bouton de démarrage visible si autoplay échoue -->
+    <div class="start-music-overlay" id="start-music-overlay" style="display: none;">
+        <div class="start-music-card">
+            <h3>🎵 Musique d'ambiance</h3>
+            <p>Cliquez pour démarrer la musique de fond</p>
+            <button class="start-music-btn" id="start-music-btn">
+                <i class="fas fa-play"></i> Démarrer la musique
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const backgroundCard = document.querySelector('.background-card');
+            const audio = document.getElementById('background-music');
+            const audioBtn = document.getElementById('audio-btn');
+            const audioIcon = document.getElementById('audio-icon');
+            const startMusicOverlay = document.getElementById('start-music-overlay');
+            const startMusicBtn = document.getElementById('start-music-btn');
+            
+            // Détecter si l'appareil est tactile
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            // Configuration audio
+            audio.volume = 0.3; // Volume à 30%
+            audio.muted = false; // S'assurer que ce n'est pas muet
+            
+            // Détection d'Arc Browser
+            const isArcBrowser = navigator.userAgent.includes('Arc') || 
+                                window.navigator.userAgent.includes('Mac') && 
+                                window.navigator.userAgent.includes('Safari') && 
+                                !window.navigator.userAgent.includes('Chrome');
+            
+            console.log('Arc Browser détecté:', isArcBrowser);
+            
+            // Gestion du bouton audio
+            let isPlaying = false;
+            let hasUserInteracted = false;
+            let userManuallyMuted = false; // Nouvelle variable pour tracker le mute manuel
+            let overlayIsVisible = false; // Variable pour tracker si l'overlay est visible
+            
+            // Fonction pour démarrer la musique (démarrage initial uniquement)
+            function startMusic() {
+                if (isPlaying || userManuallyMuted) return; // Ne pas redémarrer si l'utilisateur a muté
+                
+                // S'assurer que le volume est bien réglé et pas muet
+                audio.volume = 0.3;
+                audio.muted = false;
+                
+                // Pour Arc Browser, essayer d'abord en mode muet puis unmute
+                if (isArcBrowser) {
+                    audio.muted = true;
+                    audio.play().then(function() {
+                        audio.muted = false;
+                        audio.volume = 0.3;
+                        audioIcon.className = 'fas fa-volume-up';
+                        audioBtn.classList.add('playing');
+                        isPlaying = true;
+                        overlayIsVisible = false; // Réinitialiser car la musique démarre
+                        startMusicOverlay.style.display = 'none'; // Cacher l'overlay
+                        console.log('Musique démarrée automatiquement sur Arc Browser');
+                    }).catch(function(error) {
+                        console.log('Erreur Arc Browser:', error);
+                        // Essayer sans mute
+                        audio.muted = false;
+                        audio.play().then(function() {
+                            audioIcon.className = 'fas fa-volume-up';
+                            audioBtn.classList.add('playing');
+                            isPlaying = true;
+                            overlayIsVisible = false;
+                            startMusicOverlay.style.display = 'none';
+                        }).catch(function(error2) {
+                            console.log('Erreur finale Arc Browser:', error2);
+                            if (!userManuallyMuted) {
+                                showStartMusicOverlay();
+                            }
+                        });
+                    });
+                } else {
+                    // Pour les autres navigateurs
+                    audio.load();
+                    
+                    audio.play().then(function() {
+                        audioIcon.className = 'fas fa-volume-up';
+                        audioBtn.classList.add('playing');
+                        isPlaying = true;
+                        overlayIsVisible = false;
+                        startMusicOverlay.style.display = 'none';
+                        console.log('Musique démarrée automatiquement');
+                    }).catch(function(error) {
+                        console.log('Erreur de démarrage automatique:', error);
+                        if (!userManuallyMuted) {
+                            showStartMusicOverlay();
+                        }
+                    });
+                }
+            }
+            
+            // Fonction pour afficher l'overlay de démarrage
+            function showStartMusicOverlay() {
+                if (!isPlaying && !userManuallyMuted) {
+                    startMusicOverlay.style.display = 'flex';
+                    overlayIsVisible = true;
+                    console.log('Overlay affiché - événements d\'interaction désactivés');
+                }
+            }
+            
+            // Tentative au premier mouvement de souris
+            let mouseMoved = false;
+            document.addEventListener('mousemove', function() {
+                if (!mouseMoved && !isPlaying && !userManuallyMuted && !overlayIsVisible) {
+                    mouseMoved = true;
+                    console.log('Premier mouvement de souris détecté');
+                    setTimeout(startMusic, 100);
+                }
+            }, { once: true });
+            
+            // Tentatives multiples pour forcer le démarrage
+            const attempts = [1000, 2000, 3000, 5000];
+            attempts.forEach(delay => {
+                setTimeout(function() {
+                    if (!isPlaying && !userManuallyMuted && !overlayIsVisible) {
+                        console.log('Tentative de démarrage à', delay + 'ms');
+                        startMusic();
+                    }
+                }, delay);
+            });
+            
+            // Tentative au chargement complet de la page
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    if (!isPlaying && !userManuallyMuted && !overlayIsVisible) {
+                        console.log('Tentative après chargement complet');
+                        startMusic();
+                    }
+                }, 200);
+            });
+            
+            // Gestion du bouton de démarrage manuel
+            startMusicBtn.addEventListener('click', function() {
+                console.log('Bouton de démarrage manuel cliqué');
+                overlayIsVisible = false;
+                startMusicOverlay.style.display = 'none';
+                startMusic();
+            });
+            
+            audioBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    // Muter la musique
+                    audio.pause();
+                    audioIcon.className = 'fas fa-volume-mute';
+                    audioBtn.classList.remove('playing');
+                    isPlaying = false;
+                    userManuallyMuted = true; // Marquer que l'utilisateur a volontairement muté
+                    console.log('Utilisateur a volontairement muté la musique');
+                } else {
+                    // Relancer la musique
+                    userManuallyMuted = false; // Réinitialiser le flag de mute manuel
+                    audio.volume = 0.3;
+                    audio.muted = false;
+                    
+                    audio.play().then(function() {
+                        audioIcon.className = 'fas fa-volume-up';
+                        audioBtn.classList.add('playing');
+                        isPlaying = true;
+                        overlayIsVisible = false; // Réinitialiser car la musique démarre
+                        startMusicOverlay.style.display = 'none'; // Cacher l'overlay
+                        console.log('Musique relancée par l\'utilisateur');
+                    }).catch(function(error) {
+                        console.log('Erreur lors du relancement:', error);
+                        // En cas d'erreur, remettre l'état précédent
+                        userManuallyMuted = true;
+                        isPlaying = false;
+                    });
+                }
+            });
+            
+            // Afficher l'overlay si la musique n'a pas démarré après 6 secondes
+            setTimeout(function() {
+                if (!isPlaying && !userManuallyMuted) {
+                    console.log('Affichage de l\'overlay de démarrage manuel');
+                    showStartMusicOverlay();
+                }
+            }, 6000);
+            
+            // Gestion des événements audio
+            audio.addEventListener('play', function() {
+                audioIcon.className = 'fas fa-volume-up';
+                audioBtn.classList.add('playing');
+                isPlaying = true;
+            });
+            
+            audio.addEventListener('pause', function() {
+                audioIcon.className = 'fas fa-volume-mute';
+                audioBtn.classList.remove('playing');
+                isPlaying = false;
+            });
+            
+            audio.addEventListener('ended', function() {
+                // La musique se relance automatiquement grâce à loop="true"
+            });
+            
+            // Gestion des erreurs audio
+            audio.addEventListener('error', function(e) {
+                console.error('Erreur audio:', e);
+                console.error('Code erreur:', audio.error ? audio.error.code : 'inconnu');
+                audioBtn.style.display = 'none'; // Cacher le bouton si pas d'audio
+            });
+            
+            audio.addEventListener('loadstart', function() {
+                console.log('Chargement audio démarré');
+            });
+            
+            audio.addEventListener('canplay', function() {
+                console.log('Audio peut être joué');
+            });
+            
+            // Appliquer l'effet parallax seulement sur les appareils non-tactiles
+            if (!isTouchDevice) {
+                backgroundCard.addEventListener('mousemove', function(e) {
+                    const rect = backgroundCard.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 25;
+                    const rotateY = (centerX - x) / 25;
+                    
+                    backgroundCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+                
+                backgroundCard.addEventListener('mouseleave', function() {
+                    backgroundCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                });
+            }
+            
+            // Optimisation pour le redimensionnement de fenêtre
+            window.addEventListener('resize', function() {
+                if (isTouchDevice) {
+                    backgroundCard.style.transform = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

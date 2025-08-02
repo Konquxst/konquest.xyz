@@ -1,0 +1,18 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets"
+public_folder: "/assets"
+
+collections:
+  - name: "bio"
+    label: "Bio"
+    files:
+      - file: "bio-config.json"
+        label: "Configuration de la bio"
+        name: "bio_config"
+        fields:
+          - { label: "Avatar", name: "avatar", widget: "image" }
+          - { label: "Bannière", name: "banner", widget: "image" }
+          - { label: "Couleur principale", name: "main_color", widget: "color" } 
