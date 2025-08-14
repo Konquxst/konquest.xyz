@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --card-bg: rgba(80, 0, 0, 0.65); /* anciennement gris */
-            --card-border: rgba(255, 40, 40, 0.15); /* anciennement gris clair */
+            --card-bg: rgba(40, 40, 40, 0.65);
+            --card-border: rgba(128, 128, 128, 0.15);
             --text-primary: #ffffff;
-            --text-secondary: #ffb3b3; /* anciennement gris */
+            --text-secondary: #cccccc;
             --blur-radius: 12px;
         }
 
@@ -37,7 +37,7 @@
             left: -10px;
             right: -10px;
             bottom: -10px;
-            background: url('assets/background.gif') center/cover no-repeat fixed;
+            background: url('assets/background1.gif') center/cover no-repeat fixed;
             filter: blur(20px);
             z-index: -1;
         }
@@ -132,7 +132,7 @@
 
         .banner-image {
             height: 180px;
-            background-image: url("assets/banner.webp");
+            background-image: url("assets/banner.png");
             background-size: cover;
             background-position: center;
             border-radius: 16px;
@@ -141,19 +141,19 @@
             justify-content: center;
             font-size: 3em;
             font-weight: 700;
-            color: rgb(187, 46, 46);
+            color: #666666;
             border: 1px solid var(--card-border);
             box-shadow: 
-                0 0 20px rgba(187, 46, 46, 0.4),
-                0 0 40px rgba(187, 46, 46, 0.2),
-                0 0 60px rgba(187, 46, 46, 0.1);
+                0 0 20px rgba(128, 128, 128, 0.4),
+                0 0 40px rgba(128, 128, 128, 0.2),
+                0 0 60px rgba(128, 128, 128, 0.1);
         }
 
         .profile-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 4px solid #a92d2d;
+            border: 4px solid #666666;
             position: absolute;
             bottom: 0;
             left: 50%;
@@ -179,7 +179,7 @@
         }
 
         .subtitle-links a {
-            background-color: rgba(120, 0, 0, 0.8); /* anciennement gris */
+            background-color: rgba(80, 80, 80, 0.8);
             border: 1px solid var(--card-border);
             border-radius: 8px;
             padding: 6px 12px;
@@ -190,7 +190,7 @@
         }
 
         .subtitle-links a:hover {
-            background-color: rgba(180, 0, 0, 0.9); /* anciennement gris */
+            background-color: rgba(120, 120, 120, 0.9);
         }
         
         .rank-section {
@@ -255,7 +255,7 @@
         }
         
         .join-button {
-            background-color: #b02929;
+            background-color: #666666;
             color: white;
             border: none;
             border-radius: 8px;
@@ -271,7 +271,7 @@
 
         .join-button:hover {
             color: #ffffff;
-            background-color: #a61515;
+            background-color: #888888;
         }
 
         .page-footer {
@@ -519,12 +519,12 @@
             }
 
             .join-button:hover {
-                background-color: #a91818;
-                color: rgb(114, 8, 8);
+                background-color: #888888;
+                color: #ffffff;
             }
 
             .subtitle-links a:hover {
-                background-color: rgba(120, 0, 0, 0.8); /* anciennement gris */
+                background-color: rgba(120, 120, 120, 0.8);
             }
         }
 
@@ -553,8 +553,8 @@
         }
 
         .audio-btn:hover {
-            background-color: rgba(178, 44, 44, 0.8);
-            border-color: rgba(125, 22, 22, 0.2);
+            background-color: rgba(128, 128, 128, 0.8);
+            border-color: rgba(80, 80, 80, 0.2);
             transform: scale(1.1);
         }
 
@@ -629,7 +629,7 @@
         }
 
         .start-music-btn {
-            background: linear-gradient(135deg, #921212, #750b0b);
+            background: linear-gradient(135deg, #666666, #444444);
             color: white;
             border: none;
             border-radius: 12px;
@@ -645,7 +645,7 @@
         }
 
         .start-music-btn:hover {
-            background: linear-gradient(135deg, #6a0404, #5d0707);
+            background: linear-gradient(135deg, #888888, #666666);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
@@ -662,22 +662,22 @@
         <div class="background-card">
             <header class="profile-header">
                 <div class="banner-image"></div>
-                <img src="assets/avatar.jpg" alt="Avatar de Konquest" class="profile-avatar">
+                <img src="assets/avatar.webp" alt="Avatar de Konquest" class="profile-avatar">
             </header>
 
             <main class="card main-info-card">
                 <h1>Konquest</h1>
                 <div class="subtitle-links">
-                    <a href="https://discord.gg/beonepourcent">/beonepourcent</a>
-                    <a href="https://discord.gg/VBN5YFjtxA">/cryptx</a>
+                    <a href="https://fnishub.org">FNIS Hub</a>
+                    <a href="https://github.com/Konquxst">Github</a>
                 </div>
 
                 <div class="rank-section">
                     <h2>A propos de moi</h2>
-                    <span>🔍・Compétences :
-                        <br> Developpeur Full Stack (HTML, CSS, JS, PY)
-                        <br> GFX (PS, C4D)
-                        <br> Audio (FL Studio, APO, Voicemeeter)
+                    <span>
+                        <br> Dev Full Stack | Audio | GFX
+                        <br> Owner de la FNIS (Cyber) et de JK Nexus (Roblox)
+                        <br> En constante recherche de collaboration
                     </span>
                 </div>
 
